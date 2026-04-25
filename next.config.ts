@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Allow loading GLB from external sources
+
   async headers() {
     return [
       {
@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // Increase body size limit for large files
+
   experimental: {
     largePageDataBytes: 512 * 1024,
   },
