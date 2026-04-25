@@ -101,7 +101,7 @@ export default function LaptopScene() {
     let laptopGroup: THREE.Group | null = null;
 
     loader.load(
-      'https://github.com/arun-055/my-portfolio/raw/refs/heads/main/public/Laptop-opt1.glb',
+      'https://cdn.jsdelivr.net/gh/arun-055/my-portfolio@main/public/Laptop-opt1.glb',
       (gltf) => {
         laptopGroup = gltf.scene as THREE.Group;
 
