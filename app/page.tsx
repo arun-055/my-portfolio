@@ -11,12 +11,12 @@ const LaptopScene = dynamic(() => import('@/components/LaptopScene'), { ssr: fal
 /* ── DATA ─────────────────────────────────────────────────────────────── */
 
 const skills = [
-  { label: 'C++ / Java',               level: 88, color: '#00f5ff' },
-  { label: 'JavaScript / TypeScript',   level: 90, color: '#39ff14' },
-  { label: 'React / Next.js',           level: 87, color: '#00f5ff' },
+  { label: 'C++ / Java',               level: 90, color: '#00f5ff' },
+  { label: 'JavaScript / TypeScript',   level: 87, color: '#39ff14' },
+  { label: 'React / Next.js',           level: 90, color: '#00f5ff' },
   { label: 'Node.js / Express',         level: 85, color: '#39ff14' },
-  { label: 'MongoDB / MySQL',           level: 80, color: '#bf00ff' },
-  { label: 'DSA / Problem Solving',     level: 92, color: '#ff6b35' },
+  { label: 'MongoDB / MySQL',           level: 90, color: '#bf00ff' },
+  { label: 'DSA / Problem Solving',     level: 85, color: '#ff6b35' },
 ];
 
 const techLogos = [
