@@ -6,6 +6,13 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+// Try multiple URLs in order until one works
+const GLB_URLS = [
+  '/Laptop-opt1.glb',
+  '/laptop-opt.glb',
+  '/laptop.glb',
+];
+
 export default function LaptopScene() {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -91,55 +98,68 @@ export default function LaptopScene() {
     controls.target.set(0, 0, 0);
     controls.update();
 
-    /* ── Load GLB ── */
+    /* ── Draco loader ── */
     const draco = new DRACOLoader();
     draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
-
     const loader = new GLTFLoader();
     loader.setDRACOLoader(draco);
 
     let laptopGroup: THREE.Group | null = null;
 
-    loader.load(
-      'https://cdn.jsdelivr.net/gh/arun-055/my-portfolio@main/public/Laptop-opt1.glb',
-      (gltf) => {
-        laptopGroup = gltf.scene as THREE.Group;
+    /* ── Try each URL until one loads ── */
+    const tryLoad = (urls: string[], index: number) => {
+      if (index >= urls.length) {
+        console.warn('All GLB URLs failed to load');
+        return;
+      }
+      const url = urls[index];
+      console.log(`Trying GLB: ${url}`);
+      loader.load(
+        url,
+        (gltf) => {
+          console.log(`Loaded successfully: ${url}`);
+          laptopGroup = gltf.scene as THREE.Group;
 
-        // ── Auto-fit: compute bounding box and scale to fit nicely ──
-        const box = new THREE.Box3().setFromObject(laptopGroup);
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const desiredSize = 3.2; // how big it appears in scene
-        const scaleFactor = desiredSize / maxDim;
-        laptopGroup.scale.setScalar(scaleFactor);
+          // Auto-fit bounding box
+          const box = new THREE.Box3().setFromObject(laptopGroup);
+          const size = box.getSize(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const scaleFactor = 3.2 / maxDim;
+          laptopGroup.scale.setScalar(scaleFactor);
 
-        // Re-center after scaling
-        const box2 = new THREE.Box3().setFromObject(laptopGroup);
-        const center = box2.getCenter(new THREE.Vector3());
-        laptopGroup.position.sub(center);
-        laptopGroup.position.y -= 0.2; // slight downward nudge
+          // Re-center
+          const box2 = new THREE.Box3().setFromObject(laptopGroup);
+          const center = box2.getCenter(new THREE.Vector3());
+          laptopGroup.position.sub(center);
+          laptopGroup.position.y -= 0.2;
 
-        // Boost materials
-        laptopGroup.traverse((child) => {
-          if ((child as THREE.Mesh).isMesh) {
-            const mesh = child as THREE.Mesh;
-            const mats = Array.isArray(mesh.material)
-              ? mesh.material
-              : [mesh.material];
-            mats.forEach((m) => {
-              if (m instanceof THREE.MeshStandardMaterial) {
-                m.envMapIntensity = 1.5;
-                m.needsUpdate = true;
-              }
-            });
-          }
-        });
+          // Boost materials
+          laptopGroup.traverse((child) => {
+            if ((child as THREE.Mesh).isMesh) {
+              const mesh = child as THREE.Mesh;
+              const mats = Array.isArray(mesh.material)
+                ? mesh.material
+                : [mesh.material];
+              mats.forEach((m) => {
+                if (m instanceof THREE.MeshStandardMaterial) {
+                  m.envMapIntensity = 1.5;
+                  m.needsUpdate = true;
+                }
+              });
+            }
+          });
 
-        scene.add(laptopGroup);
-      },
-      undefined,
-      (err) => console.error('GLB load error:', err)
-    );
+          scene.add(laptopGroup);
+        },
+        undefined,
+        () => {
+          console.warn(`Failed: ${url} — trying next...`);
+          tryLoad(urls, index + 1);
+        }
+      );
+    };
+
+    tryLoad(GLB_URLS, 0);
 
     /* ── Animate ── */
     let frameId: number;
@@ -149,12 +169,10 @@ export default function LaptopScene() {
       frameId = requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
 
-      // Float laptop
       if (laptopGroup) {
         laptopGroup.position.y = Math.sin(t * 0.7) * 0.08 - 0.2;
       }
 
-      // Ring spin + pulse glow
       ring.rotation.z = t * 0.3;
       ringMat.emissiveIntensity = 1.2 + Math.sin(t * 2.2) * 0.5;
 
