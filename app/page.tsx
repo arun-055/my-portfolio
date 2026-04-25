@@ -439,8 +439,7 @@ export default function Home() {
       {/* ══ FOOTER ════════════════════════════════════════════════════ */}
       <footer style={{ borderTop:'1px solid rgba(0,245,255,0.07)', padding:'26px 40px', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:'14px' }}>
         <div style={{ fontFamily:'Share Tech Mono,monospace', fontSize:'0.7rem', color:'#94a3b8' }}>
-          <span style={{ color:'#00f5ff' }}>©</span> 2025 Arun Kumar Nath · Built with{' '}
-          <span style={{ color:'#00f5ff' }}>Next.js</span> + <span style={{ color:'#bf00ff' }}>Three.js</span> + <span style={{ color:'#39ff14' }}>MongoDB</span>
+          <span style={{ color:'#00f5ff' }}>©</span> 2025 Arun Kumar Nath · All rights reserved.
         </div>
         <div style={{ display:'flex', gap:'18px', flexWrap:'wrap' }}>
           {[{l:'GitHub',h:'https://github.com/arun-055'},{l:'LinkedIn',h:'#'},{l:'LeetCode',h:'#'},{l:'GFG',h:'#'}].map(s=>(

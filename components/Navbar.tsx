@@ -22,12 +22,12 @@ export default function Navbar() {
       borderBottom: scrolled ? '1px solid rgba(0,245,255,0.08)' : 'none',
       transition: 'all 0.4s',
     }}>
-      {/* Logo */}
+      
       <div style={{ fontFamily: 'Orbitron, sans-serif', fontWeight: 900, fontSize: '1.1rem' }}>
         <span style={{ color: '#00f5ff' }}> My Portfolio </span>
       </div>
 
-      {/* Desktop */}
+     
       <div style={{ display: 'flex', gap: '28px', alignItems: 'center' }} className="desk-nav">
         {links.map(l => (
           <a key={l} href={`#${l.toLowerCase()}`} className="nav-link">
@@ -39,7 +39,7 @@ export default function Navbar() {
         </a>
       </div>
 
-      {/* Mobile hamburger */}
+      
       <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'none' }} className="hamburger">
         {[0,1,2].map(i => (
           <div key={i} style={{
