@@ -6,7 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-// Try multiple URLs in order until one works
+
 const GLB_URLS = [
   '/Laptop-opt1.glb',
   '/laptop-opt.glb',
@@ -23,7 +23,7 @@ export default function LaptopScene() {
     const W = el.clientWidth;
     const H = el.clientHeight;
 
-    /* ── Renderer ── */
+
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
@@ -35,13 +35,12 @@ export default function LaptopScene() {
     renderer.toneMappingExposure = 1.3;
     el.appendChild(renderer.domElement);
 
-    /* ── Scene / Camera ── */
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
     camera.position.set(0, 2, 7);
     camera.lookAt(0, 0, 0);
 
-    /* ── Lights ── */
+  
     scene.add(new THREE.AmbientLight(0xffffff, 1.0));
 
     const dir = new THREE.DirectionalLight(0xffffff, 2);
@@ -60,7 +59,7 @@ export default function LaptopScene() {
     frontLight.position.set(0, 1, 5);
     scene.add(frontLight);
 
-    /* ── Neon orbit ring ── */
+
     const ringGeo = new THREE.TorusGeometry(2.8, 0.012, 8, 100);
     const ringMat = new THREE.MeshStandardMaterial({
       color: 0x00f5ff,
@@ -73,7 +72,7 @@ export default function LaptopScene() {
     ring.rotation.x = Math.PI / 2.3;
     scene.add(ring);
 
-    /* ── Ground glow disc ── */
+ 
     const discGeo = new THREE.CircleGeometry(2, 48);
     const discMat = new THREE.MeshBasicMaterial({
       color: 0x00f5ff,
@@ -86,7 +85,7 @@ export default function LaptopScene() {
     disc.position.y = -1.5;
     scene.add(disc);
 
-    /* ── OrbitControls ── */
+    
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableZoom = false;
     controls.enablePan = false;
@@ -98,7 +97,6 @@ export default function LaptopScene() {
     controls.target.set(0, 0, 0);
     controls.update();
 
-    /* ── Draco loader ── */
     const draco = new DRACOLoader();
     draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
     const loader = new GLTFLoader();
@@ -106,7 +104,6 @@ export default function LaptopScene() {
 
     let laptopGroup: THREE.Group | null = null;
 
-    /* ── Try each URL until one loads ── */
     const tryLoad = (urls: string[], index: number) => {
       if (index >= urls.length) {
         console.warn('All GLB URLs failed to load');
@@ -120,20 +117,17 @@ export default function LaptopScene() {
           console.log(`Loaded successfully: ${url}`);
           laptopGroup = gltf.scene as THREE.Group;
 
-          // Auto-fit bounding box
           const box = new THREE.Box3().setFromObject(laptopGroup);
           const size = box.getSize(new THREE.Vector3());
           const maxDim = Math.max(size.x, size.y, size.z);
           const scaleFactor = 3.2 / maxDim;
           laptopGroup.scale.setScalar(scaleFactor);
 
-          // Re-center
           const box2 = new THREE.Box3().setFromObject(laptopGroup);
           const center = box2.getCenter(new THREE.Vector3());
           laptopGroup.position.sub(center);
           laptopGroup.position.y -= 0.2;
 
-          // Boost materials
           laptopGroup.traverse((child) => {
             if ((child as THREE.Mesh).isMesh) {
               const mesh = child as THREE.Mesh;
@@ -161,7 +155,6 @@ export default function LaptopScene() {
 
     tryLoad(GLB_URLS, 0);
 
-    /* ── Animate ── */
     let frameId: number;
     const clock = new THREE.Clock();
 
@@ -181,7 +174,6 @@ export default function LaptopScene() {
     };
     animate();
 
-    /* ── Resize ── */
     const onResize = () => {
       if (!el) return;
       const w = el.clientWidth;
@@ -192,7 +184,6 @@ export default function LaptopScene() {
     };
     window.addEventListener('resize', onResize);
 
-    /* ── Cleanup ── */
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener('resize', onResize);
